@@ -37,7 +37,7 @@ class MusicsService {
 
   async getSongById(id) {
     const query = {
-      text: 'SELECT * FROM songs WHERE id = $1',
+      text: 'SELECT * FROM musics WHERE id = $1',
       values: [id],
     };
     const result = await this._pool.query(query);
@@ -54,7 +54,7 @@ class MusicsService {
   }) {
     const updatedAt = new Date().toISOString();
     const query = {
-      text: 'UPDATE musics SET title = $1, year = $2, performer = $3, genre = $4, duration = $5 updated_at = $6 WHERE id = $7 RETURNING id',
+      text: 'UPDATE musics SET title = $1, year = $2, performer = $3, genre = $4, duration = $5, updated_at = $6 WHERE id = $7 RETURNING id',
       values: [title, year, performer, genre, duration, updatedAt, id],
     };
 
