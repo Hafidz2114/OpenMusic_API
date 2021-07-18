@@ -12,7 +12,7 @@ class MusicsService {
   async addSong({
     title, year, performer, genre, duration,
   }) {
-    const id = nanoid(16);
+    const id = `musik-${nanoid(16)}`;
     const insertedAt = new Date().toISOString();
     const updatedAt = insertedAt;
 
@@ -31,7 +31,7 @@ class MusicsService {
   }
 
   async getSongs() {
-    const result = await this._pool.query('SELECT * FROM musics');
+    const result = await this._pool.query('SELECT id, title, performer FROM musics');
     return result.rows.map(mapDBToModel);
   }
 
@@ -42,7 +42,7 @@ class MusicsService {
     };
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Musik tidak ditemukan');
     }
 
@@ -60,7 +60,7 @@ class MusicsService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal memperbarui musik. Id tidak ditemukan');
     }
   }
@@ -73,7 +73,7 @@ class MusicsService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Musik gagal dihapus. Id tidak ditemukan');
     }
   }

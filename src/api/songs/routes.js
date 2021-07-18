@@ -14,19 +14,19 @@ const routes = (handler) => [
   {
     // getSongByIdHandler mengembalikan "satu" musik.
     method: 'GET',
-    path: '/songs/{songId}',
+    path: '/songs/{id}',
     handler: handler.getMusicByIdHandler,
   },
   {
     // putSongByIdHandler hanya menerima dan mengubah "satu" musik.
     method: 'PUT',
-    path: '/songs/{songId}',
+    path: '/songs/{id}',
     handler: handler.putMusicByIdHandler,
   },
   {
     // deleteSongByIdHandler hanya menghapus "satu" musik.
     method: 'DELETE',
-    path: '/songs/{songId}',
+    path: '/songs/{id}',
     handler: handler.deleteMusicByIdHandler,
   },
 ];
