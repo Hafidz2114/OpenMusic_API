@@ -68,7 +68,7 @@ class PlaylistsService {
     const playlist = result.rows[0];
 
     if (playlist.owner !== owner) {
-      throw new AuthorizationError('Anda tidak memiliki hak untuk mengakses resource ini');
+      throw new AuthorizationError('Anda tidak memiliki hak untuk mengakses resource ini!');
     }
   }
 }
