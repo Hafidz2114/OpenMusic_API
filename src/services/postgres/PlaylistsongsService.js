@@ -5,8 +5,9 @@ const AuthorizationError = require('../../exceptions/AuthorizationError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
 class PlaylistsongsService {
-  constructor() {
+  constructor(collaborationService) {
     this._pool = new Pool();
+    this._collaborationService = collaborationService;
   }
 
   async addPlaylistsong({ playlistId, songId }) {
@@ -29,9 +30,10 @@ class PlaylistsongsService {
   async getPlaylistsongs(owner) {
     const query = {
       text: `SELECT musics.id, musics.title, musics.performer FROM musics 
-             RIGHT JOIN musicsplaylist ON musicsplaylist.music_id = musics.id 
-             RIGHT JOIN playlists ON playlists.id = musicsplaylist.playlist_id
-             WHERE playlists.owner = $1 GROUP BY musicsplaylist.music_id, musics.id`,
+             LEFT JOIN musicsplaylist ON musicsplaylist.music_id = musics.id 
+             LEFT JOIN playlists ON playlists.id = musicsplaylist.playlist_id
+             LEFT JOIN collaborations ON collaborations.playlist_id = musicsplaylist.playlist_id
+             WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
       values: [owner],
     };
 
@@ -52,7 +54,7 @@ class PlaylistsongsService {
     }
   }
 
-  async verifyPlaylistOwner(id, verification) {
+  async verifyPlaylistOwner(id, owner) {
     const query = {
       text: 'SELECT * FROM playlists WHERE id = $1',
       values: [id],
@@ -66,22 +68,22 @@ class PlaylistsongsService {
 
     const playlist = result.rows[0];
 
-    if (playlist.owner !== verification) {
+    if (playlist.owner !== owner) {
       throw new AuthorizationError('Anda tidak memiliki hak untuk mengakses resource ini!');
     }
   }
 
-  async verifyPlaylistAccess(id, verification) {
+  async verifyPlaylistAccess(playlistId, userId) {
     try {
-      await this.verifyPlaylistOwner(id, verification);
+      await this.verifyPlaylistOwner(playlistId, userId);
     } catch (error) {
       if (error instanceof NotFoundError) {
-        throw new NotFoundError('Playlist tidak ditemukan!');
+        throw error;
       }
       try {
-        await this._collaborationService.verifyCollaborator(id, verification);
+        await this._collaborationService.verifyCollaborator(playlistId, userId);
       } catch {
-        throw new AuthorizationError('Anda tidak memiliki hak untuk mengakses resource ini!');
+        throw error;
       }
     }
   }
