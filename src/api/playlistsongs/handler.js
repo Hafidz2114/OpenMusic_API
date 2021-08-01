@@ -38,7 +38,7 @@ class PlaylistsongsHandler {
     return {
       status: 'success',
       data: {
-        songs: songs.rows.map((song) => ({
+        songs: songs.map((song) => ({
           id: song.id,
           title: song.title,
           performer: song.performer,
