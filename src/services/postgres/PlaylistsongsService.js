@@ -38,8 +38,7 @@ class PlaylistsongsService {
         text: `SELECT musics.id, musics.title, musics.performer FROM musics 
                LEFT JOIN musicsplaylist ON musicsplaylist.music_id = musics.id 
                LEFT JOIN playlists ON playlists.id = musicsplaylist.playlist_id
-               LEFT JOIN collaborations ON collaborations.playlist_id = musicsplaylist.playlist_id
-               WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
+               WHERE playlists.id = $1`,
         values: [playlistId],
       };
 

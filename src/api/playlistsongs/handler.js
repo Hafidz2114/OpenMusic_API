@@ -33,7 +33,7 @@ class PlaylistsongsHandler {
     const { playlistId } = request.params;
 
     await this._service.verifyPlaylistAccess(playlistId, credentialId);
-    const songs = await this._service.getPlaylistsongs(credentialId);
+    const songs = await this._service.getPlaylistsongs(playlistId);
 
     return {
       status: 'success',
